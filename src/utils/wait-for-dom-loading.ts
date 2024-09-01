@@ -1,10 +1,10 @@
 export default function waitForDOMLoading(callback: () => void) {
-  const intervalId = window.setInterval(() => {
+  const intervalId = window.setTimeout(() => {
     const app = document.querySelector("#ggbApplet .toolsPanel");
 
     if (app) {
       window.clearInterval(intervalId);
       callback();
     }
-  }, 50);
+  }, 1000);
 }
