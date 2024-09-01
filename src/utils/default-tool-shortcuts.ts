@@ -66,7 +66,7 @@ const defaultToolShortcuts: Record<Tool, string> = {
   "Relazione": 'Alt+Shift+a',
   "Pulsante": 'Alt+Shift+s',
   "Casella di controllo": 'Alt+Shift+d',
-  "Campo di inserimento": 'Alt+Shift+e'
+  "Campo di inserimento": 'Alt+Shift+f'
 };
 
 export default defaultToolShortcuts;

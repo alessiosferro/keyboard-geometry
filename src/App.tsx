@@ -12,7 +12,7 @@ export default function App() {
   const [filterKey, setFilterKey] = useState("");
 
   const filteredShortcuts = useMemo(() => Object.entries(storedShortcuts).filter(([toolName]) =>
-    toolName.toLowerCase().includes(filterKey))
+    toolName.toLowerCase().includes(filterKey.toLowerCase()))
     .reduce((acc, [toolName, shortcut]) => ({
       ...acc,
       [toolName]: {
@@ -69,7 +69,7 @@ export default function App() {
         <Box as="form" onSubmit={handleSave}>
           <Flex direction="column" gap="2rem">
             {Object.entries(filteredShortcuts).map(([toolName, {shortcut, description}]) => (
-              <Flex as="label" direction="column">
+              <Flex key={toolName} as="label" direction="column">
                 <Heading mb="1rem">{toolName}</Heading>
                 <Text mb=".8rem">{description}</Text>
                 <Input name={toolName} defaultValue={shortcut}/>
