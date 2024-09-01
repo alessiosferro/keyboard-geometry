@@ -1,29 +1,27 @@
-import LOCAL_STORAGE_SHORTCUTS_KEY from "./local-storage-shortcuts-key";
 import TOOL_MAP, {Tool} from "./tool-map";
 import actions from "./actions";
-import {BehaviorSubject} from "rxjs";
 import defaultToolShortcuts from "./default-tool-shortcuts";
+import LOCAL_STORAGE_SHORTCUTS_KEY from "./local-storage-shortcuts-key";
 
-export function getUpdatedShortcuts() {
-  const storedItems = localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY);
-  const storedShortcuts = storedItems ? JSON.parse(storedItems) : defaultToolShortcuts as Record<Tool, string>;
-
+export function getUpdatedShortcuts(shortcuts: Record<Tool, string>): Shortcuts {
   const tools = (Object.keys(TOOL_MAP) as Tool[]);
 
   return tools.reduce((acc, toolName) => ({
     ...acc,
-    [storedShortcuts[toolName]]: {
+    [shortcuts[toolName]]: {
       callback: actions[toolName],
       toolName
     }
   }), {});
 }
 
-const shortcuts: BehaviorSubject<Shortcuts> = new BehaviorSubject(getUpdatedShortcuts());
-
 export type Shortcuts = Record<string, {
   callback: () => void,
   toolName: Tool
 }>
+
+const storedShortcuts = localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY)
+
+const shortcuts = getUpdatedShortcuts(storedShortcuts ? JSON.parse(storedShortcuts) : defaultToolShortcuts);
 
 export default shortcuts;

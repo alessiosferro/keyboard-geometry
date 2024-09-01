@@ -1,14 +1,7 @@
 import shortcuts from "../utils/shortcuts";
-import {Subscription} from "rxjs";
 
 export default function listenKeydownEvents() {
-  let subscription: Subscription;
-
   document.addEventListener('keydown', (event) => {
-    if (subscription) {
-      subscription.unsubscribe();
-    }
-
     const key: string[] = [];
 
     if (event.metaKey) {
@@ -33,9 +26,9 @@ export default function listenKeydownEvents() {
 
     const shortcut = key.join('+') as keyof typeof shortcuts;
 
-    subscription = shortcuts.subscribe(shortcuts => {
+    if (shortcuts[shortcut]) {
       event.preventDefault();
       shortcuts[shortcut].callback();
-    });
+    }
   });
 }

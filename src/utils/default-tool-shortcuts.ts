@@ -1,4 +1,6 @@
-const defaultToolShortcuts = {
+import {Tool} from "./tool-map";
+
+const defaultToolShortcuts: Record<Tool, string> = {
   "Muovi": 'Shift+q',
   "Punto": 'Shift+w',
   "Segmento": 'Shift+e',
