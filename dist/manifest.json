@@ -16,7 +16,7 @@
         "https://www.geogebra.org/*"
       ],
       "js": [
-        "main.js"
+        "bundle.js"
       ],
       "run_at": "document_end"
     }
