@@ -234,7 +234,7 @@ const shortcuts: Record<string, { toolName: Tool, callback: () => void }> = {
     toolName: "Inversione circolare",
     callback: () => selectTool("Inversione circolare")
   },
-  'Alt+0': {
+  'Alt+Shift+n': {
     toolName: "Immagine",
     callback: () => selectTool("Immagine")
   },
