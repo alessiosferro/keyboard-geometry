@@ -1,28 +1,22 @@
 export default function updateToolButtonStyle() {
   const intervalId = setInterval(() => {
     const toolButtons = document.querySelectorAll<HTMLElement>('.toolButton');
-    const toolButtonLabels = document.querySelectorAll<HTMLElement>('.toolButton .gwt-Label');
 
     const toolButtonsArray = Array.from(toolButtons);
-    const toolButtonLabelsArray = Array.from(toolButtonLabels);
-
-    const [firstToolButton] = toolButtonsArray;
-    const [firstToolButtonLabel] = toolButtonLabelsArray;
 
     toolButtonsArray.forEach((toolButton) => {
       toolButton.style.height = 'unset';
       toolButton.style.margin = '0';
+
+      const label = toolButton.querySelector<HTMLDivElement>('.gwt-Label')!
+      label.style.height = 'unset';
+      label.style.width = 'unset';
+      label.style.wordBreak = 'break-word';
+      label.style.maxWidth = '80px';
     });
 
-    toolButtonLabelsArray.forEach((toolLabel) => {
-      toolLabel.style.height = 'unset';
-      toolLabel.style.width = 'unset';
-      toolLabel.style.wordBreak = 'break-word';
-      toolLabel.style.maxWidth = '80px';
-    });
-
-    if (firstToolButton.style.height === 'unset' && firstToolButtonLabel.style.height === 'unset') {
-      window.clearInterval(intervalId);
+    if (toolButtonsArray.every(item => item.style.height === 'unset')) {
+      clearInterval(intervalId);
     }
   }, 100);
 }

@@ -5,9 +5,15 @@
     "jsx": "react",
     "strict": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "lib": [
+      "ESNext",
+      "dom",
+      "dom.iterable"
+    ]
   },
   "include": [
     "src"

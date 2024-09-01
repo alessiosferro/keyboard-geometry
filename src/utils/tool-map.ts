@@ -1,3 +1,5 @@
+export type Tool = keyof typeof TOOL_MAP;
+
 const TOOL_MAP = {
   "Muovi": {
     "value": "mode0",
@@ -265,6 +267,4 @@ const TOOL_MAP = {
   }
 }
 
-export type Tool = keyof typeof TOOL_MAP;
-
-export default TOOL_MAP;
+export default TOOL_MAP as Record<Tool, { value: string, description: string }>;
