@@ -1,12 +1,15 @@
 import shortcuts from "../constants/shortcuts";
 import TOOL_MAP from "../constants/tool-map";
 import INTERVAL_DURATION from "../constants/interval-duration";
+import getUpdatedShortcuts from "./get-updated-shortcuts";
 
 export default function appendShortcutsText() {
   let isFirstInterval = true;
 
   const intervalId = window.setInterval(() => {
-    Object.entries(shortcuts).forEach(([shortcut, {toolName}]) => {
+    Object.entries(getUpdatedShortcuts(shortcuts)).forEach(([shortcut, {toolName}]) => {
+      if (!TOOL_MAP[toolName]) return;
+
       const toolLabels = document.querySelectorAll<HTMLElement>(`#${TOOL_MAP[toolName].value} .gwt-Label`);
 
       toolLabels.forEach((toolElement) => {

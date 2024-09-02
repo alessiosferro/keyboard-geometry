@@ -2,6 +2,11 @@ import React, {KeyboardEventHandler, useEffect, useMemo, useRef, useState} from 
 import toolAutocompleteOptions from "../utils/constants/tool-autocomplete-options";
 import {Box, ChakraProvider, Input, Text, useOutsideClick} from "@chakra-ui/react";
 import theme from "../utils/constants/theme";
+import {LOCAL_STORAGE_LANGUAGE_KEY} from "../utils/constants/local-storage-shortcuts-key";
+
+if (!localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY)) {
+  localStorage.setItem(LOCAL_STORAGE_LANGUAGE_KEY, "en");
+}
 
 export default function SearchFilter() {
   const [searchKey, setSearchKey] = useState("");

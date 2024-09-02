@@ -1,7 +1,18 @@
 import {createMultiStyleConfigHelpers, defineStyle, extendTheme} from "@chakra-ui/react";
-import {inputAnatomy} from '@chakra-ui/anatomy';
+import {checkboxAnatomy, inputAnatomy, selectAnatomy} from '@chakra-ui/anatomy';
 
 const {definePartsStyle, defineMultiStyleConfig} = createMultiStyleConfigHelpers(inputAnatomy.keys);
+
+const {
+  definePartsStyle: checkboxPartsStyle,
+  defineMultiStyleConfig: checkboxMultiStyleConfig
+} = createMultiStyleConfigHelpers(checkboxAnatomy.keys)
+
+const {
+  definePartsStyle: selectPartsStyle,
+  defineMultiStyleConfig: selectMultiStyleConfig
+} = createMultiStyleConfigHelpers(selectAnatomy.keys)
+
 
 const theme = extendTheme({
   styles: {
@@ -18,6 +29,39 @@ const theme = extendTheme({
     }
   },
   components: {
+    Select: selectMultiStyleConfig({
+      baseStyle: selectPartsStyle({
+        field: {
+          "&.chakra-select": {
+            fontSize: "1.6rem",
+
+            svg: {
+              fontSize: "1rem"
+            }
+          }
+        },
+      })
+    }),
+    Checkbox: checkboxMultiStyleConfig({
+      baseStyle: checkboxPartsStyle({
+        control: {
+          "&.chakra-checkbox__control": {
+            width: "2rem",
+            height: "2rem",
+
+            svg: {
+              fontSize: "1rem"
+            }
+          }
+        },
+        label: {
+          "&.chakra-checkbox__label": {
+            ml: "1rem",
+            fontSize: "1.6rem"
+          }
+        }
+      })
+    }),
     Text: {
       baseStyle: {
         fontSize: "1.6rem"

@@ -1,38 +1,69 @@
-import React, {FocusEventHandler, KeyboardEventHandler, useEffect, useMemo, useRef, useState} from 'react';
+import React, {
+  ChangeEventHandler,
+  FocusEventHandler,
+  KeyboardEventHandler,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import TOOL_MAP, {Tool} from "./utils/constants/tool-map";
-import {Box, ChakraBaseProvider, Flex, FormControl, FormLabel, Heading, Input, Text} from "@chakra-ui/react";
+import {
+  Box,
+  ChakraBaseProvider,
+  Checkbox,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Select,
+  Text
+} from "@chakra-ui/react";
 import theme from "./utils/constants/theme";
-import LOCAL_STORAGE_SHORTCUTS_KEY from "./utils/constants/local-storage-shortcuts-key";
+import {LOCAL_STORAGE_LANGUAGE_KEY} from "./utils/constants/local-storage-shortcuts-key";
 import defaultToolShortcuts from "./utils/constants/default-tool-shortcuts";
 import DuplicateShortcutModal from "./components/DuplicateShortcutModal";
 import getShortcutString from "./utils/functions/get-shortcut-string";
-
+import {SHORTCUTS} from "./popup";
 
 export default function App() {
-  const savedShortcuts = localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY);
+  const savedShortcuts = localStorage.getItem(SHORTCUTS);
+  const language = localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) || "en";
   const [storedShortcuts, setStoredShortcuts] = useState<Record<string, string>>(savedShortcuts ? JSON.parse(savedShortcuts) : defaultToolShortcuts);
+
   const [filterKey, setFilterKey] = useState("");
+  const [filterShortcut, setFilterShortcut] = useState("");
+
+  const [searchByShortcut, setSearchByShortcut] = useState(false);
   const [duplicateTool, setDuplicateTool] = useState<{ toolName: string, shortcut: string } | null>(null);
 
   const refs = useRef<HTMLInputElement[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const filteredShortcuts = useMemo(() => Object.entries(storedShortcuts).filter(([toolName]) =>
-    toolName.toLowerCase().includes(filterKey.toLowerCase()))
-    .reduce((acc, [toolName, shortcut]) => ({
-      ...acc,
-      [toolName]: {
-        ...TOOL_MAP[toolName as Tool],
-        shortcut
-      },
-    }), {} as Record<Tool, {
-      value: string,
-      description: string,
-      shortcut: string
-    }>), [storedShortcuts, filterKey]);
+  const filteredShortcuts = useMemo(() => {
+    return Object.entries(storedShortcuts).filter(([toolName, shortcut]) => {
+      if (searchByShortcut) {
+        return !filterShortcut || shortcut === filterShortcut;
+      }
+
+      return toolName.toLowerCase().includes(filterKey.toLowerCase())
+    })
+      .reduce((acc, [toolName, shortcut]) => ({
+        ...acc,
+        [toolName]: {
+          ...TOOL_MAP[toolName as Tool],
+          shortcut
+        },
+      }), {} as Record<Tool, {
+        value: string,
+        description: string,
+        shortcut: string
+      }>)
+  }, [storedShortcuts, searchByShortcut, filterShortcut, filterKey]);
 
   useEffect(() => {
-    const storedItems = localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY);
+    const storedItems = localStorage.getItem(SHORTCUTS);
     if (!storedItems) return;
     setStoredShortcuts(JSON.parse(storedItems));
   }, [])
@@ -53,7 +84,7 @@ export default function App() {
       })
     });
 
-    localStorage.setItem(LOCAL_STORAGE_SHORTCUTS_KEY, JSON.stringify({
+    localStorage.setItem(SHORTCUTS, JSON.stringify({
       ...storedShortcuts,
       ...data
     }));
@@ -70,6 +101,16 @@ export default function App() {
 
   const handleKeyChange: KeyboardEventHandler<HTMLInputElement> = (event) => {
     event.preventDefault();
+
+    if (event.key === 'Enter') {
+      return;
+    }
+
+    if (['Escape', 'Backspace'].includes(event.key)) {
+      event.currentTarget.value = "";
+      return;
+    }
+
     event.currentTarget.value = getShortcutString(event);
   }
 
@@ -116,6 +157,20 @@ export default function App() {
     closeModal();
   }
 
+  const handleChangeLanguage: ChangeEventHandler<HTMLSelectElement> = event => {
+    localStorage.setItem(LOCAL_STORAGE_LANGUAGE_KEY, event.target.value);
+    location.reload();
+
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+      const activeTab = tabs[0];
+
+      void chrome.tabs.sendMessage(activeTab.id!, {
+        action: "changeLanguage",
+        value: event.target.value
+      })
+    });
+  }
+
   return (
     <ChakraBaseProvider theme={theme}>
 
@@ -141,10 +196,32 @@ export default function App() {
           by reloading automatically.
         </Text>
 
-        <FormControl mb="2rem">
-          <FormLabel fontSize="1.6rem" mb=".8rem">Ricerca</FormLabel>
-          <Input onChange={e => setFilterKey(e.target.value)} value={filterKey} placeholder="Cerca strumento..."/>
+        <FormControl mb="1rem">
+          <FormLabel fontSize="1.6rem" mb=".8rem">Search</FormLabel>
+          <Input
+            {...(searchByShortcut ? {
+              onKeyDown: (e) => {
+                handleKeyChange(e);
+                setFilterShortcut(e.currentTarget.value);
+                console.log(e.currentTarget.value);
+              },
+              value: filterShortcut
+            } : {
+              onChange: e => setFilterKey(e.target.value),
+              value: filterKey
+            })}
+            placeholder="Search tool..."/>
         </FormControl>
+
+        <Checkbox mb="2rem" fontSize="1.6rem" onChange={ev => setSearchByShortcut(ev.target.checked)}
+                  checked={searchByShortcut}>
+          Search by shortcut
+        </Checkbox>
+
+        <Select mb="2rem" onChange={handleChangeLanguage} defaultValue={language} placeholder='Select language'>
+          <option value="it">IT</option>
+          <option value="en">EN</option>
+        </Select>
 
         <Box as="hr" my="3rem"/>
 

@@ -1,16 +1,20 @@
-import {Tool} from "./tool-map";
 import defaultToolShortcuts from "./default-tool-shortcuts";
-import LOCAL_STORAGE_SHORTCUTS_KEY from "./local-storage-shortcuts-key";
-import getUpdatedShortcuts from "../functions/get-updated-shortcuts";
 
-const storedShortcuts = localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY)
+import {
+  LOCAL_STORAGE_LANGUAGE_KEY,
+  LOCAL_STORAGE_SHORTCUTS_KEY_EN,
+  LOCAL_STORAGE_SHORTCUTS_KEY_IT
+} from "./local-storage-shortcuts-key";
 
-const shortcuts = getUpdatedShortcuts(storedShortcuts ? JSON.parse(storedShortcuts) : defaultToolShortcuts);
+const storedShortcuts = {
+  it: localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY_IT),
+  en: localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY_EN),
+}
 
-export default shortcuts;
+const languageKey = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as "it" | "en") || "en";
 
+const shortcuts = storedShortcuts[languageKey] ?
+  JSON.parse(storedShortcuts[languageKey]) :
+  defaultToolShortcuts;
 
-export type Shortcuts = Record<string, {
-  callback: () => void,
-  toolName: Tool
-}>
+export default shortcuts as Record<string, string>;

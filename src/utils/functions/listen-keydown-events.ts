@@ -1,5 +1,6 @@
 import shortcuts from "../constants/shortcuts";
 import getShortcutString from "./get-shortcut-string";
+import getUpdatedShortcuts from "./get-updated-shortcuts";
 
 export default function listenKeydownEvents() {
   document.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -11,9 +12,11 @@ export default function listenKeydownEvents() {
       return input.focus();
     }
 
-    if (shortcuts[shortcut]) {
+    const updatedShortcuts = getUpdatedShortcuts(shortcuts);
+
+    if (updatedShortcuts[shortcut]) {
       event.preventDefault();
-      shortcuts[shortcut].callback();
+      updatedShortcuts[shortcut].callback();
     }
   });
 }
