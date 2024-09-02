@@ -1,5 +1,6 @@
 import shortcuts from "../constants/shortcuts";
 import TOOL_MAP from "../constants/tool-map";
+import INTERVAL_DURATION from "../constants/interval-duration";
 
 export default function appendShortcutsText() {
   let isFirstInterval = true;
@@ -23,7 +24,7 @@ export default function appendShortcutsText() {
     if (!isFirstInterval && Array.from(getAllToolLabels()).every(label => label.textContent?.includes("<br>"))) {
       clearInterval(intervalId);
     }
-  }, 100);
+  }, INTERVAL_DURATION);
 }
 
 function getAllToolLabels() {

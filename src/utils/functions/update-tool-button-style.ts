@@ -1,3 +1,5 @@
+import INTERVAL_DURATION from "../constants/interval-duration";
+
 export default function updateToolButtonStyle() {
   let isFirstInterval = true;
 
@@ -22,5 +24,5 @@ export default function updateToolButtonStyle() {
     }
 
     isFirstInterval = false;
-  }, 100);
+  }, INTERVAL_DURATION);
 }

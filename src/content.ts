@@ -6,6 +6,7 @@ import updateToolButtonStyle from "./utils/functions/update-tool-button-style";
 import appendShortcutsText from "./utils/functions/append-shortcuts-text";
 import LOCAL_STORAGE_SHORTCUTS_KEY from "./utils/constants/local-storage-shortcuts-key";
 import shortcuts from "./utils/constants/shortcuts";
+import drawSearchFilter from "./utils/functions/draw-search-filter";
 
 if (!localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY)) {
   localStorage.setItem(LOCAL_STORAGE_SHORTCUTS_KEY, JSON.stringify(shortcuts));
@@ -19,6 +20,7 @@ waitForDOMLoading(() => {
   updateCategoryPanelStyle();
   updateToolButtonStyle();
   appendShortcutsText();
+  drawSearchFilter();
 });
 
 chrome.runtime.onMessage.addListener(function (request: { action: string, value: string }) {
