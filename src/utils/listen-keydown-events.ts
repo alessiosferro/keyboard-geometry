@@ -1,4 +1,4 @@
-import shortcuts from "../utils/shortcuts";
+import shortcuts from "./shortcuts";
 
 export default function listenKeydownEvents() {
   document.addEventListener('keydown', (event) => {

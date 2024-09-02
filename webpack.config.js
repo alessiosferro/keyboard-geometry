@@ -2,40 +2,40 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: './src/main.tsx', // Punto di ingresso dell'applicazione
+    entry: './src/main.tsx',
     output: {
-        filename: 'bundle.js', // Nome del file di output
-        path: path.resolve(__dirname, 'dist') // Directory di output
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist')
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx'] // Estensioni dei file da risolvere
+        extensions: ['.ts', '.tsx', '.js', '.jsx']
     },
     module: {
         rules: [
             {
-                test: /\.tsx?$/, // Regola per i file TypeScript e TSX
-                use: 'ts-loader', // Usa ts-loader per caricare i file
-                exclude: /node_modules/ // Esclude la cartella node_modules
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
             },
             {
-                test: /\.css$/, // Regola per i file CSS
-                use: ['style-loader', 'css-loader'] // Usa style-loader e css-loader per i file CSS
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
             }
         ]
     },
     plugins: [
         new HtmlWebpackPlugin({
-            filename: 'popup.html', // Nome del file HTML di output
-            template: './dist/popup.html', // Template per generare il file HTML
-            chunks: ['popup'] // Include solo il bundle 'popup' in questo file
+            filename: 'popup.html',
+            template: './dist/popup.html',
+            chunks: ['popup']
         }),
     ],
     devServer: {
         static: {
-            directory: path.join(__dirname, 'dist'), // Directory da servire
+            directory: path.join(__dirname, 'dist'),
         },
-        compress: true, // Abilita la compressione
-        port: 9000, // Porta del server di sviluppo
-        open: true // Apre il browser automaticamente
+        compress: true,
+        port: 9000,
+        open: true
     }
 };

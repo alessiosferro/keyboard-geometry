@@ -1,5 +1,5 @@
-import shortcuts from "../utils/shortcuts";
-import TOOL_MAP from "../utils/tool-map";
+import shortcuts from "./shortcuts";
+import TOOL_MAP from "./tool-map";
 
 export default function appendShortcutsText() {
   const intervalId = window.setInterval(() => {

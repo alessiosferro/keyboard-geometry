@@ -1,4 +1,4 @@
-import selectTool from "../features/select-tool";
+import selectTool from "./select-tool";
 import {Tool} from "./tool-map";
 
 const actionNames: Tool[] = [

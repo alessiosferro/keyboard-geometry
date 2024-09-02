@@ -1,42 +1,20 @@
-import React, {
-  FocusEventHandler,
-  FormEventHandler,
-  KeyboardEventHandler,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, {FocusEventHandler, KeyboardEventHandler, useEffect, useMemo, useRef, useState} from 'react';
 import TOOL_MAP, {Tool} from "./utils/tool-map";
-import {
-  Box,
-  Button,
-  ChakraBaseProvider,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text
-} from "@chakra-ui/react";
-import theme from "./theme";
+import {Box, ChakraBaseProvider, Flex, FormControl, FormLabel, Heading, Input, Text} from "@chakra-ui/react";
+import theme from "./utils/theme";
 import LOCAL_STORAGE_SHORTCUTS_KEY from "./utils/local-storage-shortcuts-key";
 import defaultToolShortcuts from "./utils/default-tool-shortcuts";
+import DuplicateShortcutModal from "./components/DuplicateShortcutModal";
 
 
 export default function App() {
   const savedShortcuts = localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY);
   const [storedShortcuts, setStoredShortcuts] = useState<Record<string, string>>(savedShortcuts ? JSON.parse(savedShortcuts) : defaultToolShortcuts);
   const [filterKey, setFilterKey] = useState("");
-  const [duplicateToolName, setDuplicateToolName] = useState("");
+  const [duplicateTool, setDuplicateTool] = useState<{ toolName: string, shortcut: string } | null>(null);
 
-  const refs = useRef<{ toolName: string, el: HTMLDivElement }[]>([]);
+  const refs = useRef<HTMLInputElement[]>([]);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const filteredShortcuts = useMemo(() => Object.entries(storedShortcuts).filter(([toolName]) =>
     toolName.toLowerCase().includes(filterKey.toLowerCase()))
@@ -58,10 +36,8 @@ export default function App() {
     setStoredShortcuts(JSON.parse(storedItems));
   }, [])
 
-  const handleSave: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget) as FormData;
+  const handleSave = (form: HTMLFormElement, reloadPage: boolean = true) => {
+    const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries())
 
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
@@ -74,7 +50,11 @@ export default function App() {
     });
 
     localStorage.setItem(LOCAL_STORAGE_SHORTCUTS_KEY, JSON.stringify(data));
-    location.reload();
+    setStoredShortcuts(data as Record<string, string>);
+
+    if (reloadPage) {
+      location.reload();
+    }
   }
 
   const handleKeyChange: KeyboardEventHandler<HTMLInputElement> = (event) => {
@@ -82,12 +62,12 @@ export default function App() {
 
     event.preventDefault();
 
-    if (event.shiftKey) {
-      value.push("Shift");
-    }
-
     if (event.altKey) {
       value.push("Alt")
+    }
+
+    if (event.shiftKey) {
+      value.push("Shift");
     }
 
     if (!["Alt", "Shift"].includes(event.key)) {
@@ -98,40 +78,59 @@ export default function App() {
   }
 
   const handleBlur: FocusEventHandler<HTMLInputElement> = (event) => {
-    const storedShortcut = Object.entries(storedShortcuts).find(([, shortcut]) => shortcut === event.currentTarget.value);
-    if (!storedShortcut) return;
-    const [toolName] = storedShortcut;
-    setDuplicateToolName(toolName);
+    const duplicateStoredShortcut = Object.entries(storedShortcuts).find(([toolName, shortcut]) =>
+      toolName !== event.currentTarget.name &&
+      shortcut === event.currentTarget.value
+    );
+
+    if (!duplicateStoredShortcut) {
+      return handleSave(formRef.current!);
+    }
+
+    setDuplicateTool({
+      toolName: event.currentTarget.name,
+      shortcut: event.currentTarget.value
+    });
   }
 
   const closeModal = () => {
-    setDuplicateToolName("");
+    setDuplicateTool(null);
+  }
+
+  const duplicate = (refs.current.find(ref =>
+    ref.name !== duplicateTool?.toolName &&
+    ref.value === duplicateTool?.shortcut
+  ));
+
+  const handleCancelShortcut = () => {
+    if (!duplicate) return;
+
+    duplicate.value = "";
+    handleSave(formRef.current!, false);
+    closeModal();
+  }
+
+  const handleAbort = () => {
+    const ref = refs.current.find(ref => ref.name === duplicateTool?.toolName);
+
+    if (!ref) return;
+
+    ref.value = Object.entries(storedShortcuts).find(([toolName]) => toolName === ref.name)?.[1] || "";
+    handleSave(formRef.current!, false);
+    closeModal();
   }
 
   return (
     <ChakraBaseProvider theme={theme}>
-      <Modal onClose={closeModal} isOpen={duplicateToolName !== ""}>
-        <ModalOverlay/>
-        <ModalContent>
-          <ModalHeader>Confirm new shortcut</ModalHeader>
-          <ModalBody>
-            The shortcut entered is already assigned to {duplicateToolName}. Are you sure you want to reset
-            the {duplicateToolName} shortcut?
-          </ModalBody>
-          <ModalFooter>
-            <Button>Abort</Button>
-            <Button onClick={() => {
-              const element = (refs.current.find(ref => ref.toolName)?.el as HTMLInputElement);
 
-              if (!element) return;
-
-              element.value = "";
-
-              closeModal()
-            }}>Confirm</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <DuplicateShortcutModal
+        onAbort={handleAbort}
+        onConfirm={handleCancelShortcut}
+        description={`The shortcut entered is already assigned to "${duplicate?.name}". Are you sure you want to reset
+          the "${duplicate?.name}" shortcut?`}
+        isOpen={!!duplicateTool}
+        onClose={closeModal}
+      />
 
       <Box m="1rem 2rem">
         <Heading mb="1rem" fontSize="2.4rem" as="h1">Geogebra Shortcuts Extension 1.0</Heading>
@@ -147,25 +146,22 @@ export default function App() {
           <Input onChange={e => setFilterKey(e.target.value)} value={filterKey} placeholder="Cerca strumento..."/>
         </FormControl>
 
-        <Box as="form" onSubmit={handleSave}>
-          <Flex direction="column" gap="2rem">
-            {Object.entries(filteredShortcuts).map(([toolName, {shortcut, description}]) => (
-              <Flex ref={(el) => el && refs.current.push({el, toolName})} key={toolName} as="label"
-                    direction="column">
-                <Heading mb="1rem">{toolName}</Heading>
-                <Text mb=".8rem">{description}</Text>
-                <Input onBlur={handleBlur} onKeyDown={handleKeyChange} name={toolName} defaultValue={shortcut}/>
-              </Flex>
-            ))}
-          </Flex>
-
-          <Button variant="primary"
-                  borderRadius="1rem"
-                  type="submit"
-                  position="fixed"
-                  right="2rem"
-                  bottom="2rem">Save</Button>
-        </Box>
+        <Flex as="form" ref={formRef} direction="column" gap="2rem">
+          {Object.entries(filteredShortcuts).map(([toolName, {shortcut, description}]) => (
+            <Flex key={toolName}
+                  direction="column">
+              <Heading id={`${toolName}-label`} mb="1rem">{toolName}</Heading>
+              <Text id={`${toolName}-description`} mb=".8rem">{description}</Text>
+              <Input ref={(el) => el && refs.current.push(el)}
+                     aria-labelledby={`${toolName}-label`}
+                     aria-describedby={`${toolName}-description`}
+                     onBlur={handleBlur}
+                     onKeyDown={handleKeyChange}
+                     name={toolName}
+                     defaultValue={shortcut}/>
+            </Flex>
+          ))}
+        </Flex>
       </Box>
     </ChakraBaseProvider>
   );
