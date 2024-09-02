@@ -13,7 +13,7 @@ export default function drawSearchFilter() {
       clearInterval(intervalId);
 
       const rootDiv = document.createElement("div");
-      rootDiv.id = "geogebra-extension-root";
+      rootDiv.id = "search-filter-extension";
       panel?.appendChild(rootDiv);
 
       const root = createRoot(rootDiv);

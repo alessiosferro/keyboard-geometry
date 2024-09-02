@@ -1,2 +1,5 @@
 node_modules
-dist/main.js
+dist/bundle.js
+dist/bundle.js.LICENSE.txt
+dist/content.js
+dist/content.js.LICENSE.txt

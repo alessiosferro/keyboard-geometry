@@ -22,8 +22,8 @@ export default function getShortcutString(event: KeyboardEvent | React.KeyboardE
     key.push('⇧ Shift');
   }
 
-  if (!['⌘ Command', '⌃ Control', 'Ctrl', '⌥ Option', 'Alt', '⇧ Shift'].includes(event.key)) {
-    key.push(event.code.toUpperCase().slice(-1));
+  if (event.code && !['⌘ Command', '⌃ Control', 'Ctrl', '⌥ Option', 'Alt', '⇧ Shift'].includes(event.key)) {
+    key.push(event.code?.toUpperCase().slice(-1));
   }
 
   return key.join(' + ') as keyof typeof shortcuts;
