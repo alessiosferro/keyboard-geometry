@@ -1,4 +1,6 @@
-export default function flexCategoryPanel() {
+export default function updateCategoryPanelStyle() {
+  let isFirstInterval = true;
+
   const intervalId = setInterval(() => {
     const categoryPanels = Array.from(document.querySelectorAll<HTMLElement>('.categoryPanel'));
 
@@ -9,9 +11,11 @@ export default function flexCategoryPanel() {
       panel.style.padding = '10px 0 15px';
     });
 
-    if (categoryPanels.every(panel => panel.style.display === 'flex')) {
+    if (isFirstInterval && categoryPanels.every(panel => panel.style.display === 'flex')) {
       clearInterval(intervalId);
     }
+
+    isFirstInterval = false;
   }, 100);
 
 }

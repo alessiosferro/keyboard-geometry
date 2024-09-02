@@ -1,10 +1,11 @@
 import React, {FocusEventHandler, KeyboardEventHandler, useEffect, useMemo, useRef, useState} from 'react';
-import TOOL_MAP, {Tool} from "./utils/tool-map";
+import TOOL_MAP, {Tool} from "./utils/constants/tool-map";
 import {Box, ChakraBaseProvider, Flex, FormControl, FormLabel, Heading, Input, Text} from "@chakra-ui/react";
-import theme from "./utils/theme";
-import LOCAL_STORAGE_SHORTCUTS_KEY from "./utils/local-storage-shortcuts-key";
-import defaultToolShortcuts from "./utils/default-tool-shortcuts";
+import theme from "./utils/constants/theme";
+import LOCAL_STORAGE_SHORTCUTS_KEY from "./utils/constants/local-storage-shortcuts-key";
+import defaultToolShortcuts from "./utils/constants/default-tool-shortcuts";
 import DuplicateShortcutModal from "./components/DuplicateShortcutModal";
+import getShortcutString from "./utils/functions/get-shortcut-string";
 
 
 export default function App() {
@@ -36,7 +37,7 @@ export default function App() {
     setStoredShortcuts(JSON.parse(storedItems));
   }, [])
 
-  const handleSave = (form: HTMLFormElement, reloadPage: boolean = true) => {
+  const handleSave = (form: HTMLFormElement, reloadPage = true) => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries())
 
@@ -45,12 +46,22 @@ export default function App() {
 
       void chrome.tabs.sendMessage(activeTab.id!, {
         action: "updateLocalStorage",
-        value: JSON.stringify(data)
+        value: JSON.stringify({
+          ...storedShortcuts,
+          ...data
+        })
       })
     });
 
-    localStorage.setItem(LOCAL_STORAGE_SHORTCUTS_KEY, JSON.stringify(data));
-    setStoredShortcuts(data as Record<string, string>);
+    localStorage.setItem(LOCAL_STORAGE_SHORTCUTS_KEY, JSON.stringify({
+      ...storedShortcuts,
+      ...data
+    }));
+
+    setStoredShortcuts({
+      ...storedShortcuts,
+      ...data
+    } as Record<string, string>);
 
     if (reloadPage) {
       location.reload();
@@ -58,23 +69,8 @@ export default function App() {
   }
 
   const handleKeyChange: KeyboardEventHandler<HTMLInputElement> = (event) => {
-    const value = [];
-
     event.preventDefault();
-
-    if (event.altKey) {
-      value.push("Alt")
-    }
-
-    if (event.shiftKey) {
-      value.push("Shift");
-    }
-
-    if (!["Alt", "Shift"].includes(event.key)) {
-      value.push(event.code.toLowerCase().slice(-1))
-    }
-
-    event.currentTarget.value = value.join('+');
+    event.currentTarget.value = getShortcutString(event);
   }
 
   const handleBlur: FocusEventHandler<HTMLInputElement> = (event) => {
@@ -133,12 +129,16 @@ export default function App() {
       />
 
       <Box m="1rem 2rem">
-        <Heading mb="1rem" fontSize="2.4rem" as="h1">Geogebra Shortcuts Extension 1.0</Heading>
+        <Heading mb="1rem" fontSize="2.4rem" as="h1">Geogebra Shortcuts System</Heading>
 
         <Text my="2rem">
-          Every shortcut can use a combination of Shift and Alt and a character or number.
-          For example: Alt+Shift+3 (But NOT Shift+Alt+3), Shift+a, Alt+4. Every combination that do not
-          satisfy this grammar will not work.
+          Welcome to the Geogebra Shortcuts System extension!
+          <br/><br/>
+          Changing a shortcut is very simple: select an input and press the combination of keys that you like!
+          You can use also use special keys such as "Shift", "Control", "Meta" (the "Command" key on Mac)
+          and "Alt" (or "Option" on Mac). After you type the combination of your choice, simply click away
+          from the input and the shortcut will be saved automagically! Also the website will reflect your changes
+          by reloading automatically.
         </Text>
 
         <FormControl mb="2rem">
@@ -146,12 +146,14 @@ export default function App() {
           <Input onChange={e => setFilterKey(e.target.value)} value={filterKey} placeholder="Cerca strumento..."/>
         </FormControl>
 
+        <Box as="hr" my="3rem"/>
+
         <Flex as="form" ref={formRef} direction="column" gap="2rem">
           {Object.entries(filteredShortcuts).map(([toolName, {shortcut, description}]) => (
             <Flex key={toolName}
                   direction="column">
-              <Heading id={`${toolName}-label`} mb="1rem">{toolName}</Heading>
-              <Text id={`${toolName}-description`} mb=".8rem">{description}</Text>
+              <Heading size="h3" id={`${toolName}-label`} mb="1rem">{toolName}</Heading>
+              <Text id={`${toolName}-description`} mb=".8rem">{description.split(".")[1]}</Text>
               <Input ref={(el) => el && refs.current.push(el)}
                      aria-labelledby={`${toolName}-label`}
                      aria-describedby={`${toolName}-description`}

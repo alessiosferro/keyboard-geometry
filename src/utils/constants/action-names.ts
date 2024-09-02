@@ -1,7 +1,7 @@
-import selectTool from "./select-tool";
+import selectTool from "../functions/select-tool";
 import {Tool} from "./tool-map";
 
-const actionNames: Tool[] = [
+const actions: Tool[] = [
   "Muovi",
   "Punto",
   "Segmento",
@@ -70,9 +70,9 @@ const actionNames: Tool[] = [
   "Campo di inserimento"
 ];
 
-const actions = actionNames.reduce((acc, action) => ({
+const actionNames = actions.reduce((acc, action) => ({
   ...acc,
   [action]: () => selectTool(action)
 }), {} as Record<Tool, () => void>);
 
-export default actions;
+export default actionNames;

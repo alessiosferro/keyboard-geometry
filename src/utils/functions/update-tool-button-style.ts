@@ -1,4 +1,6 @@
 export default function updateToolButtonStyle() {
+  let isFirstInterval = true;
+
   const intervalId = setInterval(() => {
     const toolButtons = document.querySelectorAll<HTMLElement>('.toolButton');
 
@@ -15,8 +17,10 @@ export default function updateToolButtonStyle() {
       label.style.maxWidth = '80px';
     });
 
-    if (toolButtonsArray.every(item => item.style.height === 'unset')) {
+    if (!isFirstInterval && toolButtonsArray.every(item => item.style.height === 'unset')) {
       clearInterval(intervalId);
     }
+
+    isFirstInterval = false;
   }, 100);
 }
