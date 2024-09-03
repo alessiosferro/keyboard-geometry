@@ -1,5 +1,5 @@
 node_modules
 dist/bundle.js
 dist/bundle.js.LICENSE.txt
-dist/content.js
-dist/content.js.LICENSE.txt
+dist/popup.js
+dist/popup.js.LICENSE.txt

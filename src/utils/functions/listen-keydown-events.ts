@@ -6,7 +6,7 @@ import isAppleDevice from "./is-apple-device";
 const listener = (event: KeyboardEvent) => {
   const shortcut = getShortcutString(event);
 
-  const shortcutToCheck = isAppleDevice() ? '⌘ Command + K' : 'Alt + Shift + K';
+  const shortcutToCheck = isAppleDevice() ? '⌘ Command + K' : 'Alt + ⇧ Shift + K';
 
   if (shortcut === shortcutToCheck) {
     const input = document.querySelector('#search-filter-extension input') as HTMLInputElement;

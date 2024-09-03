@@ -23,7 +23,7 @@ const theme = extendTheme({
       body: {
         my: "3rem",
         fontSize: "1.6rem",
-        minWidth: "80rem",
+        minWidth: "50rem",
         minHeight: "80rem",
       }
     }

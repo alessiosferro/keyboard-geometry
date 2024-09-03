@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Geogebra Shortcuts System 1.0",
+  "name": "Geogebra Geometry Shortcuts System 1.0",
   "version": "1.0",
-  "description": "A chrome extensions that adds a shortcut system to the Geogebra's geometrical calculator.",
+  "description": "A chrome extensions that adds a shortcut system and a tool search filter to the geometry calculator in Geogebra.",
   "action": {
     "default_popup": "popup.html"
   },
