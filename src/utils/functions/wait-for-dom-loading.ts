@@ -1,13 +1,32 @@
-import INTERVAL_DURATION from "../constants/interval-duration";
-
 export default function waitForDOMLoading(callback: () => void) {
-  const intervalId = window.setInterval(() => {
-    const applet = document.querySelector("#ggbApplet");
-    const app = applet?.querySelector(".toolsPanel");
+  const pickerButton = document.querySelector("#suiteAppPicker");
 
-    if (applet?.ariaLabel === 'Geometry' && !!app) {
-      window.clearInterval(intervalId);
-      callback();
+  if (!pickerButton) {
+    return;
+  }
+
+  const observer = new MutationObserver((mutationsList) => {
+    const [mutation] = mutationsList;
+
+    const targetButton = (mutation.target as HTMLButtonElement);
+
+    if (!targetButton) return;
+
+    const label = targetButton.querySelector('.gwt-Label') as HTMLDivElement;
+
+    if (!label) return;
+
+    if (label.dataset.transKey === 'Geometry') {
+      const intervalId = setInterval(() => {
+        const toolsPanel = document.querySelector("#ggbApplet .toolsPanel");
+
+        if (toolsPanel) {
+          clearInterval(intervalId);
+          callback();
+        }
+      }, 100);
     }
-  }, INTERVAL_DURATION);
+  });
+
+  observer.observe(pickerButton!, {childList: true, attributeFilter: ['data-trans-key'], subtree: true});
 }
