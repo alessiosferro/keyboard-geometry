@@ -34,12 +34,23 @@ const theme = extendTheme({
         field: {
           "&.chakra-select": {
             fontSize: "1.6rem",
+            height: "unset",
+            padding: "1rem",
 
             svg: {
               fontSize: "1rem"
             }
+          },
+
+          "+ .chakra-select__icon-wrapper": {
+            width: "unset"
           }
         },
+        icon: {
+          "&.chakra-select__icon": {
+            fontSize: "2rem"
+          }
+        }
       })
     }),
     Checkbox: checkboxMultiStyleConfig({

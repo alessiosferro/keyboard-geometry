@@ -1,5 +1,5 @@
 import selectTool from "../functions/select-tool";
-import {Tool} from "./tool-map";
+import {Tool} from "../functions/get-tool-map";
 import {LOCAL_STORAGE_LANGUAGE_KEY} from "./local-storage-shortcuts-key";
 
 const actions = {

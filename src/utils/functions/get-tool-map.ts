@@ -1,4 +1,4 @@
-import {LOCAL_STORAGE_LANGUAGE_KEY} from "./local-storage-shortcuts-key";
+import {LOCAL_STORAGE_LANGUAGE_KEY} from "../constants/local-storage-shortcuts-key";
 
 const TOOL_MAP = {
   it: {
@@ -535,8 +535,10 @@ const TOOL_MAP = {
   }
 }
 
-const languageKey = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as "it" | "en") || "en";
+export default function getToolMap() {
+  const languageKey = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as "it" | "en") || "en";
 
-export type Tool = keyof typeof TOOL_MAP[typeof languageKey];
+  return TOOL_MAP[languageKey];
+}
 
-export default TOOL_MAP[languageKey];
+export type Tool = keyof typeof TOOL_MAP["it" | "en"];

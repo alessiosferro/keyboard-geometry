@@ -1,4 +1,3 @@
-import shortcuts from "../constants/shortcuts";
 import isAppleDevice from "./is-apple-device";
 
 export default function getShortcutString(event: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>) {
@@ -26,5 +25,5 @@ export default function getShortcutString(event: KeyboardEvent | React.KeyboardE
     key.push(event.key.toUpperCase());
   }
 
-  return key.join(' + ') as keyof typeof shortcuts;
+  return key.join(' + ');
 }

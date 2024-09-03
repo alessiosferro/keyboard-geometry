@@ -1,4 +1,4 @@
-import shortcuts from "../constants/shortcuts";
+import getShortcuts from "./get-shortcuts";
 import getShortcutString from "./get-shortcut-string";
 import getUpdatedShortcuts from "./get-updated-shortcuts";
 
@@ -12,7 +12,7 @@ export default function listenKeydownEvents() {
       return input.focus();
     }
 
-    const updatedShortcuts = getUpdatedShortcuts(shortcuts);
+    const updatedShortcuts = getUpdatedShortcuts(getShortcuts());
 
     if (updatedShortcuts[shortcut]) {
       event.preventDefault();

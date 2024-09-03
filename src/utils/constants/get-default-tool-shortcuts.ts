@@ -1,7 +1,7 @@
 import {getAltKeyStr} from "../functions/get-device-key-strings";
 import {LOCAL_STORAGE_LANGUAGE_KEY} from "./local-storage-shortcuts-key";
 
-const defaultToolShortcuts = {
+const defaultShortcuts = {
   it: {
     "Muovi": '⇧ Shift + Q',
     "Punto": '⇧ Shift + W',
@@ -140,6 +140,7 @@ const defaultToolShortcuts = {
   }
 };
 
-const languageKey = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as "it" | "en") || "en";
-
-export default defaultToolShortcuts[languageKey];
+export default function getDefaultToolShortcuts() {
+  const languageKey = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as "it" | "en") || "en";
+  return defaultShortcuts[languageKey];
+}

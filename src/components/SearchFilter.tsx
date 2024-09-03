@@ -1,5 +1,5 @@
 import React, {KeyboardEventHandler, useEffect, useMemo, useRef, useState} from 'react';
-import toolAutocompleteOptions from "../utils/constants/tool-autocomplete-options";
+import getAutocompleteToolsOptions from "../utils/functions/get-autocomplete-tools-options";
 import {Box, ChakraProvider, Input, Text, useOutsideClick} from "@chakra-ui/react";
 import theme from "../utils/constants/theme";
 import {LOCAL_STORAGE_LANGUAGE_KEY} from "../utils/constants/local-storage-shortcuts-key";
@@ -20,7 +20,7 @@ export default function SearchFilter() {
   }, [searchKey]);
 
   const filteredAutocompleteOptions = useMemo(() => {
-    return toolAutocompleteOptions.filter(option =>
+    return getAutocompleteToolsOptions().filter(option =>
       option.label.toLowerCase().includes(searchKey.toLowerCase())
     );
   }, [searchKey]);

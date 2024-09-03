@@ -1,8 +1,8 @@
-import TOOL_MAP, {Tool} from "../constants/tool-map";
+import getToolMap, {Tool} from "./get-tool-map";
 
 export default function selectTool(tool: Tool) {
-  if (!TOOL_MAP[tool]) return;
+  if (!getToolMap()[tool]) return;
 
-  document.getElementById(TOOL_MAP[tool].value)?.click();
+  document.getElementById(getToolMap()[tool].value)?.click();
 }
 

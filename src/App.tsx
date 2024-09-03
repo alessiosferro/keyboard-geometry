@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState
 } from 'react';
-import TOOL_MAP, {Tool} from "./utils/constants/tool-map";
+import getToolMap, {Tool} from "./utils/functions/get-tool-map";
 import {
   Box,
   ChakraBaseProvider,
@@ -22,15 +22,19 @@ import {
 } from "@chakra-ui/react";
 import theme from "./utils/constants/theme";
 import {LOCAL_STORAGE_LANGUAGE_KEY} from "./utils/constants/local-storage-shortcuts-key";
-import defaultToolShortcuts from "./utils/constants/default-tool-shortcuts";
 import DuplicateShortcutModal from "./components/DuplicateShortcutModal";
 import getShortcutString from "./utils/functions/get-shortcut-string";
-import {SHORTCUTS} from "./popup";
+
+import getDefaultToolShortcuts from "./utils/constants/get-default-tool-shortcuts";
+import getStoredShortcuts from "./utils/functions/get-stored-shortcuts";
+import getShortcutsLanguageKey from "./utils/functions/get-shortcuts-language-key";
+import strings from "./utils/constants/strings";
 
 export default function App() {
-  const savedShortcuts = localStorage.getItem(SHORTCUTS);
-  const language = localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) || "en";
-  const [storedShortcuts, setStoredShortcuts] = useState<Record<string, string>>(savedShortcuts ? JSON.parse(savedShortcuts) : defaultToolShortcuts);
+  const savedShortcuts = getStoredShortcuts();
+  const language = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) || "en") as 'it' | 'en';
+  const translatedStrings = strings[language];
+  const [storedShortcuts, setStoredShortcuts] = useState<Record<string, string>>(savedShortcuts ? JSON.parse(savedShortcuts) : getDefaultToolShortcuts());
 
   const [filterKey, setFilterKey] = useState("");
   const [filterShortcut, setFilterShortcut] = useState("");
@@ -52,7 +56,7 @@ export default function App() {
       .reduce((acc, [toolName, shortcut]) => ({
         ...acc,
         [toolName]: {
-          ...TOOL_MAP[toolName as Tool],
+          ...getToolMap()[toolName as Tool],
           shortcut
         },
       }), {} as Record<Tool, {
@@ -63,7 +67,7 @@ export default function App() {
   }, [storedShortcuts, searchByShortcut, filterShortcut, filterKey]);
 
   useEffect(() => {
-    const storedItems = localStorage.getItem(SHORTCUTS);
+    const storedItems = getStoredShortcuts();
     if (!storedItems) return;
     setStoredShortcuts(JSON.parse(storedItems));
   }, [])
@@ -84,7 +88,7 @@ export default function App() {
       })
     });
 
-    localStorage.setItem(SHORTCUTS, JSON.stringify({
+    localStorage.setItem(getShortcutsLanguageKey(), JSON.stringify({
       ...storedShortcuts,
       ...data
     }));
@@ -159,15 +163,18 @@ export default function App() {
 
   const handleChangeLanguage: ChangeEventHandler<HTMLSelectElement> = event => {
     localStorage.setItem(LOCAL_STORAGE_LANGUAGE_KEY, event.target.value);
-    location.reload();
 
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    chrome.tabs.query({active: true, currentWindow: true}, async function (tabs) {
       const activeTab = tabs[0];
 
-      void chrome.tabs.sendMessage(activeTab.id!, {
+      await chrome.tabs.sendMessage(activeTab.id!, {
         action: "changeLanguage",
         value: event.target.value
       })
+
+      const storedShortcuts = getStoredShortcuts();
+      const shortcuts = storedShortcuts ? JSON.parse(storedShortcuts) : getDefaultToolShortcuts();
+      setStoredShortcuts(shortcuts);
     });
   }
 
@@ -177,27 +184,22 @@ export default function App() {
       <DuplicateShortcutModal
         onAbort={handleAbort}
         onConfirm={handleCancelShortcut}
-        description={`The shortcut entered is already assigned to "${duplicate?.name}". Are you sure you want to reset
-          the "${duplicate?.name}" shortcut?`}
+        description={translatedStrings.duplicateShortcut(duplicate?.name || "")}
         isOpen={!!duplicateTool}
         onClose={closeModal}
       />
 
       <Box m="1rem 2rem">
-        <Heading mb="1rem" fontSize="2.4rem" as="h1">Geogebra Shortcuts System</Heading>
+        <Heading mb="1rem" fontSize="2.4rem" as="h1">{translatedStrings.copy.title}</Heading>
 
         <Text my="2rem">
-          Welcome to the Geogebra Shortcuts System extension!
+          {translatedStrings.copy.welcome}
           <br/><br/>
-          Changing a shortcut is very simple: select an input and press the combination of keys that you like!
-          You can use also use special keys such as "Shift", "Control", "Meta" (the "Command" key on Mac)
-          and "Alt" (or "Option" on Mac). After you type the combination of your choice, simply click away
-          from the input and the shortcut will be saved automagically! Also the website will reflect your changes
-          by reloading automatically.
+          {translatedStrings.copy.description}
         </Text>
 
         <FormControl mb="1rem">
-          <FormLabel fontSize="1.6rem" mb=".8rem">Search</FormLabel>
+          <FormLabel fontSize="1.6rem" mb=".8rem">{translatedStrings.label.search}</FormLabel>
           <Input
             {...(searchByShortcut ? {
               onKeyDown: (e) => {
@@ -210,18 +212,26 @@ export default function App() {
               onChange: e => setFilterKey(e.target.value),
               value: filterKey
             })}
-            placeholder="Search tool..."/>
+            placeholder={translatedStrings.label.searchTool}/>
         </FormControl>
 
-        <Checkbox mb="2rem" fontSize="1.6rem" onChange={ev => setSearchByShortcut(ev.target.checked)}
+        <Checkbox mb="2rem"
+                  fontSize="1.6rem"
+                  onChange={ev => setSearchByShortcut(ev.target.checked)}
                   checked={searchByShortcut}>
-          Search by shortcut
+          {translatedStrings.label.searchByShortcut}
         </Checkbox>
 
-        <Select mb="2rem" onChange={handleChangeLanguage} defaultValue={language} placeholder='Select language'>
-          <option value="it">IT</option>
-          <option value="en">EN</option>
-        </Select>
+        <FormControl sx={{".chakra-select__wrapper": {maxWidth: "13rem"}}}>
+          <FormLabel fontSize="1.6rem" mb=".8rem">{translatedStrings.label.selectLanguage}</FormLabel>
+          <Select mb="2rem"
+                  onChange={handleChangeLanguage}
+                  defaultValue={language}
+          >
+            <option value="it">{translatedStrings.language.italian}</option>
+            <option value="en">{translatedStrings.language.english}</option>
+          </Select>
+        </FormControl>
 
         <Box as="hr" my="3rem"/>
 
@@ -230,7 +240,7 @@ export default function App() {
             <Flex key={toolName}
                   direction="column">
               <Heading size="h3" id={`${toolName}-label`} mb="1rem">{toolName}</Heading>
-              <Text id={`${toolName}-description`} mb=".8rem">{description.split(".")[1]}</Text>
+              {description && <Text id={`${toolName}-description`} mb=".8rem">{description.split(".")[1]}</Text>}
               <Input ref={(el) => el && refs.current.push(el)}
                      aria-labelledby={`${toolName}-label`}
                      aria-describedby={`${toolName}-description`}
