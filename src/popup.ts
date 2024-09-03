@@ -24,7 +24,7 @@ waitForDOMLoading(() => {
   }
 
   expandTools();
-  listenKeydownEvents();
+  const removeListener = listenKeydownEvents();
   updateCategoryPanelStyle();
   updateToolButtonStyle();
   appendShortcutsText();
@@ -41,6 +41,8 @@ waitForDOMLoading(() => {
       case "changeLanguage": {
         localStorage.setItem(LOCAL_STORAGE_LANGUAGE_KEY, request.value);
         appendShortcutsText({reset: true});
+        removeListener();
+        listenKeydownEvents();
         drawSearchFilter();
         break;
       }

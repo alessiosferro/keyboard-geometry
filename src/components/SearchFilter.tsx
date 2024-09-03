@@ -3,6 +3,7 @@ import getAutocompleteToolsOptions from "../utils/functions/get-autocomplete-too
 import {Box, ChakraProvider, Input, Text, useOutsideClick} from "@chakra-ui/react";
 import theme from "../utils/constants/theme";
 import {LOCAL_STORAGE_LANGUAGE_KEY} from "../utils/constants/local-storage-shortcuts-key";
+import getTranslatedStrings from "../utils/functions/get-translated-strings";
 
 if (!localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY)) {
   localStorage.setItem(LOCAL_STORAGE_LANGUAGE_KEY, "en");
@@ -12,10 +13,9 @@ export default function SearchFilter() {
   const [searchKey, setSearchKey] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const focusIndex = useRef(0);
-  const isFirstFocus = useRef(true);
+  const strings = getTranslatedStrings();
 
   useEffect(() => {
-    isFirstFocus.current = true;
     focusIndex.current = 0;
   }, [searchKey]);
 
@@ -40,7 +40,17 @@ export default function SearchFilter() {
   }
 
   const handleSelectTool: KeyboardEventHandler<HTMLInputElement> = (event) => {
-    if (event.key !== 'Enter') return;
+    event.stopPropagation();
+
+    if (event.key === 'Escape') {
+      inputRef.current?.blur();
+      setShowOptions(false);
+      return;
+    }
+
+    if (event.key !== 'Enter') {
+      return;
+    }
 
     const option = filteredAutocompleteOptions[focusIndex.current];
     if (!option) return;
@@ -56,21 +66,27 @@ export default function SearchFilter() {
   const handleOptionListFocus = (event: KeyboardEvent) => {
     if (!['ArrowUp', 'ArrowDown'].includes(event.key)) return;
 
+    event.preventDefault();
+    event.stopPropagation();
+
     const listOptionsElements = optionListRef.current!.children;
 
-    if (event.key === 'ArrowUp' && focusIndex.current !== 0) {
+    if (event.key === 'ArrowUp') {
+      if (focusIndex.current === 0) {
+        inputRef.current?.focus();
+        return;
+      }
+
       focusIndex.current--;
     }
 
-    if (!isFirstFocus.current && event.key === 'ArrowDown' && focusIndex.current !== listOptionsElements.length - 1) {
+    if (document.activeElement !== inputRef.current && event.key === 'ArrowDown' && focusIndex.current !== listOptionsElements.length - 1) {
       focusIndex.current++;
     }
 
     const button = listOptionsElements[focusIndex.current]?.firstChild as HTMLButtonElement;
     if (!button) return;
     button.focus();
-
-    isFirstFocus.current = false;
   }
 
   useEffect(() => {
@@ -81,8 +97,21 @@ export default function SearchFilter() {
     }
   }, [])
 
+  const {styles: {global: {html, body}}, ...themeStyles} = theme;
+
   return (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={{
+      styles: {
+        global: {
+          html,
+          body: {
+            ...body,
+            my: 0
+          }
+        }
+      },
+      themeStyles
+    }}>
       <Box
         position="absolute"
         left="calc(100% - 1.6rem)"
@@ -98,6 +127,7 @@ export default function SearchFilter() {
                  onFocus={() => setShowOptions(true)}
                  onKeyDown={handleSelectTool}
                  sx={{
+                   borderRadius: "1rem",
                    transition: "all 200ms ease-in-out",
 
                    "&.chakra-input.chakra-input": {
@@ -114,7 +144,7 @@ export default function SearchFilter() {
                      }
                    },
                  }}
-                 placeholder="Select Tool (⌘ Command + K)"/>
+                 placeholder={strings.label.selectTool()}/>
 
           {showOptions && (
             <Box as="ul"
@@ -144,11 +174,17 @@ export default function SearchFilter() {
             >
               {filteredAutocompleteOptions.length > 0 ? filteredAutocompleteOptions.map(option => <li
                 key={option.value}>
-                <Box as="button" _focus={{fontWeight: "bold"}} onClick={() => handleSelectOption(option.value)}>
+                <Box as="button"
+                     onKeyDown={e => {
+                       if (e.key !== 'Enter') return;
+                       e.stopPropagation();
+                     }}
+                     _focus={{textDecoration: "underline"}}
+                     onClick={() => handleSelectOption(option.value)}>
                   {option.label}
                 </Box>
               </li>) : <li>
-                <Text textAlign="center">No results found</Text>
+                <Text textAlign="center">{strings.noResultsFound}</Text>
               </li>}
             </Box>)}
         </Box>

@@ -1,4 +1,4 @@
-import {LOCAL_STORAGE_LANGUAGE_KEY} from "../constants/local-storage-shortcuts-key";
+import getCurrentLanguage from "./get-current-language";
 
 const TOOL_MAP = {
   it: {
@@ -536,7 +536,7 @@ const TOOL_MAP = {
 }
 
 export default function getToolMap() {
-  const languageKey = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as "it" | "en") || "en";
+  const languageKey = getCurrentLanguage();
 
   return TOOL_MAP[languageKey];
 }

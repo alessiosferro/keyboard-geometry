@@ -25,15 +25,16 @@ import {LOCAL_STORAGE_LANGUAGE_KEY} from "./utils/constants/local-storage-shortc
 import DuplicateShortcutModal from "./components/DuplicateShortcutModal";
 import getShortcutString from "./utils/functions/get-shortcut-string";
 
-import getDefaultToolShortcuts from "./utils/constants/get-default-tool-shortcuts";
+import getDefaultToolShortcuts from "./utils/functions/get-default-tool-shortcuts";
 import getStoredShortcuts from "./utils/functions/get-stored-shortcuts";
 import getShortcutsLanguageKey from "./utils/functions/get-shortcuts-language-key";
-import strings from "./utils/constants/strings";
+import getCurrentLanguage from "./utils/functions/get-current-language";
+import getTranslatedStrings from "./utils/functions/get-translated-strings";
 
 export default function App() {
   const savedShortcuts = getStoredShortcuts();
-  const language = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) || "en") as 'it' | 'en';
-  const translatedStrings = strings[language];
+  const language = getCurrentLanguage();
+  const strings = getTranslatedStrings();
   const [storedShortcuts, setStoredShortcuts] = useState<Record<string, string>>(savedShortcuts ? JSON.parse(savedShortcuts) : getDefaultToolShortcuts());
 
   const [filterKey, setFilterKey] = useState("");
@@ -184,22 +185,23 @@ export default function App() {
       <DuplicateShortcutModal
         onAbort={handleAbort}
         onConfirm={handleCancelShortcut}
-        description={translatedStrings.duplicateShortcut(duplicate?.name || "")}
+        description={strings.duplicateShortcut(duplicate?.name || "")}
+        title={strings.duplicateShortcutTitle}
         isOpen={!!duplicateTool}
         onClose={closeModal}
       />
 
       <Box m="1rem 2rem">
-        <Heading mb="1rem" fontSize="2.4rem" as="h1">{translatedStrings.copy.title}</Heading>
+        <Heading mb="1rem" fontSize="2.4rem" as="h1">{strings.copy.title}</Heading>
 
         <Text my="2rem">
-          {translatedStrings.copy.welcome}
+          {strings.copy.welcome}
           <br/><br/>
-          {translatedStrings.copy.description}
+          {strings.copy.description}
         </Text>
 
         <FormControl mb="1rem">
-          <FormLabel fontSize="1.6rem" mb=".8rem">{translatedStrings.label.search}</FormLabel>
+          <FormLabel fontSize="1.6rem" mb=".8rem">{strings.label.search}</FormLabel>
           <Input
             {...(searchByShortcut ? {
               onKeyDown: (e) => {
@@ -212,24 +214,24 @@ export default function App() {
               onChange: e => setFilterKey(e.target.value),
               value: filterKey
             })}
-            placeholder={translatedStrings.label.searchTool}/>
+            placeholder={strings.label.searchTool}/>
         </FormControl>
 
         <Checkbox mb="2rem"
                   fontSize="1.6rem"
                   onChange={ev => setSearchByShortcut(ev.target.checked)}
                   checked={searchByShortcut}>
-          {translatedStrings.label.searchByShortcut}
+          {strings.label.searchByShortcut}
         </Checkbox>
 
         <FormControl sx={{".chakra-select__wrapper": {maxWidth: "13rem"}}}>
-          <FormLabel fontSize="1.6rem" mb=".8rem">{translatedStrings.label.selectLanguage}</FormLabel>
+          <FormLabel fontSize="1.6rem" mb=".8rem">{strings.label.selectLanguage}</FormLabel>
           <Select mb="2rem"
                   onChange={handleChangeLanguage}
                   defaultValue={language}
           >
-            <option value="it">{translatedStrings.language.italian}</option>
-            <option value="en">{translatedStrings.language.english}</option>
+            <option value="it">{strings.language.italian}</option>
+            <option value="en">{strings.language.english}</option>
           </Select>
         </FormControl>
 

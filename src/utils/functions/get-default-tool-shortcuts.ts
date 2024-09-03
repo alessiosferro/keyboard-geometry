@@ -1,5 +1,5 @@
-import {getAltKeyStr} from "../functions/get-device-key-strings";
-import {LOCAL_STORAGE_LANGUAGE_KEY} from "./local-storage-shortcuts-key";
+import {getAltKeyStr} from "./get-device-key-strings";
+import getCurrentLanguage from "./get-current-language";
 
 const defaultShortcuts = {
   it: {
@@ -141,6 +141,6 @@ const defaultShortcuts = {
 };
 
 export default function getDefaultToolShortcuts() {
-  const languageKey = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as "it" | "en") || "en";
+  const languageKey = getCurrentLanguage();
   return defaultShortcuts[languageKey];
 }

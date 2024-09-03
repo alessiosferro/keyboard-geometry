@@ -1,11 +1,7 @@
-import getDefaultToolShortcuts from "../constants/get-default-tool-shortcuts";
+import getDefaultToolShortcuts from "./get-default-tool-shortcuts";
 
-import {
-  LOCAL_STORAGE_LANGUAGE_KEY,
-  LOCAL_STORAGE_SHORTCUTS_KEY_EN,
-  LOCAL_STORAGE_SHORTCUTS_KEY_IT
-} from "../constants/local-storage-shortcuts-key";
-
+import {LOCAL_STORAGE_SHORTCUTS_KEY_EN, LOCAL_STORAGE_SHORTCUTS_KEY_IT} from "../constants/local-storage-shortcuts-key";
+import getCurrentLanguage from "./get-current-language";
 
 const getShortcuts = (): Record<string, string> => {
   const storedShortcuts = {
@@ -13,7 +9,7 @@ const getShortcuts = (): Record<string, string> => {
     en: localStorage.getItem(LOCAL_STORAGE_SHORTCUTS_KEY_EN),
   }
 
-  const languageKey = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as "it" | "en") || "en";
+  const languageKey = getCurrentLanguage();
 
   return storedShortcuts[languageKey] ?
     JSON.parse(storedShortcuts[languageKey]) :

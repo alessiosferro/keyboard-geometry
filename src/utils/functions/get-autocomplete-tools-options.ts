@@ -1,5 +1,5 @@
 import getToolMap, {Tool} from "./get-tool-map";
-import getDefaultToolShortcuts from "../constants/get-default-tool-shortcuts";
+import getDefaultToolShortcuts from "./get-default-tool-shortcuts";
 import getStoredShortcuts from "./get-stored-shortcuts";
 
 const getLabelWithShortcut = (toolName: Tool) => {

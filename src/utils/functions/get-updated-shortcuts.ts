@@ -1,5 +1,5 @@
 import getToolMap, {Tool} from "./get-tool-map";
-import actionNames from "../constants/action-names";
+import getActionNames from "./get-action-names";
 
 export default function getUpdatedShortcuts(shortcuts: Record<Tool, string>): Record<string, {
   callback: () => void,
@@ -10,7 +10,7 @@ export default function getUpdatedShortcuts(shortcuts: Record<Tool, string>): Re
   return tools.reduce((acc, toolName) => ({
     ...acc,
     [shortcuts[toolName]]: {
-      callback: actionNames[toolName],
+      callback: getActionNames()[toolName],
       toolName
     }
   }), {});

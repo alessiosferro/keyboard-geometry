@@ -1,5 +1,11 @@
+import isAppleDevice from "../functions/is-apple-device";
+
 export default {
   it: {
+    button: {
+      abort: "Annulla",
+      confirm: "Conferma"
+    },
     copy: {
       title: "Sistema di scorciatoie per Geogebra v1",
       welcome: "Benvenuto nell’estensione del sistema di scorciatoie di Geogebra!",
@@ -9,15 +15,22 @@ export default {
       selectLanguage: "Seleziona lingua",
       search: "Ricerca",
       searchTool: "Cerca strumento...",
-      searchByShortcut: "Cerca per scorciatoia"
+      searchByShortcut: "Cerca per scorciatoia",
+      selectTool: () => `Seleziona strumento (${isAppleDevice() ? "⌘ Command + K" : "Alt + Shift + K"})`
     },
     language: {
       italian: "Italiano (it)",
       english: "Inglese (en)"
     },
+    duplicateShortcutTitle: "Scorciatoia duplicata",
+    noResultsFound: "Nessun risultato trovato",
     duplicateShortcut: (duplicateName: string) => duplicateName ? `La scorciatoia inserita è già assegnata a "${duplicateName}". Sei sicuro di voler reimpostare la scorciatoia per "${duplicateName}"?` : ""
   },
   en: {
+    button: {
+      abort: "Abort",
+      confirm: "Confirm"
+    },
     copy: {
       title: "Geogebra Shortcuts System v1",
       welcome: "Welcome to the Geogebra Shortcuts System extension!",
@@ -27,12 +40,15 @@ export default {
       selectLanguage: "Select language",
       search: "Search",
       searchTool: "Search tool...",
-      searchByShortcut: "Search by shortcut"
+      searchByShortcut: "Search by shortcut",
+      selectTool: () => `Select tool (${isAppleDevice() ? "⌘ Command + K" : "Alt + Shift + K"})`
     },
     language: {
       italian: "Italian (it)",
       english: "English (en)"
     },
+    duplicateShortcutTitle: "Duplicate shortcut found",
+    noResultsFound: "No results found",
     duplicateShortcut: (duplicateName: string) => `The shortcut entered is already assigned to "${duplicateName}". Are you sure you want to reset
           the "${duplicateName}" shortcut?`
   }

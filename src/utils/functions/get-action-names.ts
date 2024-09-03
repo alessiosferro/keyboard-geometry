@@ -1,6 +1,6 @@
-import selectTool from "../functions/select-tool";
-import {Tool} from "../functions/get-tool-map";
-import {LOCAL_STORAGE_LANGUAGE_KEY} from "./local-storage-shortcuts-key";
+import selectTool from "./select-tool";
+import {Tool} from "./get-tool-map";
+import getCurrentLanguage from "./get-current-language";
 
 const actions = {
   en: [
@@ -141,11 +141,11 @@ const actions = {
   ]
 };
 
-const languageKey = (localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as "it" | "en") || "en"
+export default function getActionNames() {
+  const languageKey = getCurrentLanguage();
 
-const actionNames = (actions[languageKey] as Tool[]).reduce((acc, action) => ({
-  ...acc,
-  [action]: () => selectTool(action)
-}), {} as Record<Tool, () => void>);
-
-export default actionNames;
+  return (actions[languageKey] as Tool[]).reduce((acc, action) => ({
+    ...acc,
+    [action]: () => selectTool(action)
+  }), {} as Record<Tool, () => void>);
+}
