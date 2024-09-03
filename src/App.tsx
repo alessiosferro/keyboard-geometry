@@ -85,7 +85,10 @@ export default function App() {
         value: JSON.stringify(Object.entries({
           ...storedShortcuts,
           ...data
-        }).reduce((acc, [key, value]) => ({...acc, [key]: (!!storedShortcuts[key] && !data[key]) ? "" : value}), {}))
+        }).reduce((acc, [key, value]) => ({
+          ...acc,
+          [key]: (!!storedShortcuts[key] && !!data[key] && data[key] !== storedShortcuts[key]) ? data[key] : value
+        }), {}))
       })
     });
 

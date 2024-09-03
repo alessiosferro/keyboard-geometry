@@ -6,21 +6,30 @@ import INTERVAL_DURATION from "../constants/interval-duration";
 export default function drawSearchFilter() {
   let isFirstInterval = true;
 
+  const rootDiv = document.createElement("div");
+  rootDiv.id = "search-filter-extension";
+
+  const root = createRoot(rootDiv);
+
+  let panel: HTMLDivElement | null = null;
+
   const intervalId = setInterval(() => {
-    const panel = document.querySelector<HTMLDivElement>("#ggbApplet .undoRedoPanel");
+    panel = document.querySelector<HTMLDivElement>("#ggbApplet .undoRedoPanel");
 
     if (!isFirstInterval && !!panel) {
       clearInterval(intervalId);
 
-      const rootDiv = document.createElement("div");
-      rootDiv.id = "search-filter-extension";
       panel?.appendChild(rootDiv);
 
-      const root = createRoot(rootDiv);
       root.render(<SearchFilter/>);
     }
 
     isFirstInterval = false;
   }, INTERVAL_DURATION);
+
+  return () => {
+    root.unmount();
+    panel?.querySelector('#search-filter-extension')?.remove();
+  }
 }
 

@@ -90,10 +90,14 @@ export default function SearchFilter() {
   }
 
   useEffect(() => {
-    boxRef.current!.addEventListener('keydown', handleOptionListFocus);
+    const box = boxRef.current;
+    
+    if (!box) return;
+
+    box.addEventListener('keydown', handleOptionListFocus);
 
     return () => {
-      boxRef.current!.removeEventListener('keydown', handleOptionListFocus);
+      box.removeEventListener('keydown', handleOptionListFocus);
     }
   }, [])
 

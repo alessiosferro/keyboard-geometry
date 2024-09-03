@@ -1,4 +1,4 @@
-export default function waitForDOMLoading(callback: () => void) {
+export default function waitForDOMLoading(callback: () => void, unmountFilterComponent: null | (() => void)) {
   const pickerButton = document.querySelector("#suiteAppPicker");
 
   if (!pickerButton) {
@@ -25,7 +25,11 @@ export default function waitForDOMLoading(callback: () => void) {
           callback();
         }
       }, 100);
+
+      return;
     }
+
+    unmountFilterComponent?.();
   });
 
   observer.observe(pickerButton!, {childList: true, attributeFilter: ['data-trans-key'], subtree: true});
