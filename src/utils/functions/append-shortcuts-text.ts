@@ -10,12 +10,14 @@ export default function appendShortcutsText(params?: { reset: boolean }) {
 
   const intervalId = window.setInterval(() => {
     Object.entries(getUpdatedShortcuts(getShortcuts())).forEach(([shortcut, {toolName}]) => {
-      if (!getToolMap()[toolName]) return;
+      const tool = getToolMap()[toolName];
 
-      const toolLabels = document.querySelectorAll<HTMLElement>(`#${getToolMap()[toolName].value} .gwt-Label`);
+      if (!tool) return;
+
+      const toolLabels = document.querySelectorAll<HTMLElement>(`#${tool.value} .gwt-Label`);
 
       toolLabels.forEach((toolElement) => {
-        if (intervalId && toolElement.innerHTML.includes(shortcut)) {
+        if (!!shortcut && intervalId && toolElement.innerHTML.includes(shortcut)) {
           return clearInterval(intervalId);
         }
 
@@ -25,7 +27,7 @@ export default function appendShortcutsText(params?: { reset: boolean }) {
           currentTextContent = currentTextContent.split('<br>')[0];
         }
 
-        toolElement.innerHTML = `${currentTextContent}<br>(${shortcut})`
+        toolElement.innerHTML = `${currentTextContent}${shortcut ? `<br>(${shortcut})` : ""}`
       });
     });
   }, INTERVAL_DURATION);

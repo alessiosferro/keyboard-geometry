@@ -75,17 +75,17 @@ export default function App() {
 
   const handleSave = (form: HTMLFormElement, reloadPage = true) => {
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries())
+    const data = Object.fromEntries(formData.entries());
 
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
       const activeTab = tabs[0];
 
       void chrome.tabs.sendMessage(activeTab.id!, {
         action: "updateLocalStorage",
-        value: JSON.stringify({
+        value: JSON.stringify(Object.entries({
           ...storedShortcuts,
           ...data
-        })
+        }).reduce((acc, [key, value]) => ({...acc, [key]: (!!storedShortcuts[key] && !data[key]) ? "" : value}), {}))
       })
     });
 
@@ -207,7 +207,6 @@ export default function App() {
               onKeyDown: (e) => {
                 handleKeyChange(e);
                 setFilterShortcut(e.currentTarget.value);
-                console.log(e.currentTarget.value);
               },
               value: filterShortcut
             } : {
