@@ -1,12 +1,12 @@
 {
-  "name": "geometry-shortcuts",
+  "name": "keyboard-geometry",
   "version": "1.0",
   "description": "",
   "main": "src/main.tsx",
   "scripts": {
     "start": "webpack serve --port 3000 --mode development",
     "build": "webpack --mode production && npm run build-script",
-    "build-script": "webpack --mode production --config webpack-content.config.js"
+    "build-script": "webpack --mode production --config webpack-popup.config.js"
   },
   "keywords": [],
   "author": "Alessio Sferro",

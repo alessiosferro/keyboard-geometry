@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 
 export default [
-    {ignores: ['webpack.config.js', 'webpack-content.config.js']},
+    {ignores: ['webpack.config.js', 'webpack-popup.config.js']},
     {files: ["**/*.{js,mjs,cjs,ts}"]},
     {languageOptions: {globals: globals.browser}},
     pluginJs.configs.recommended,

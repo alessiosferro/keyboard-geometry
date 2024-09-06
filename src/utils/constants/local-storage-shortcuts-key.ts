@@ -1,3 +1,3 @@
-export const LOCAL_STORAGE_SHORTCUTS_KEY_IT = 'geometry-shortcuts-extension-it';
-export const LOCAL_STORAGE_SHORTCUTS_KEY_EN = 'geometry-shortcuts-extension-en';
-export const LOCAL_STORAGE_LANGUAGE_KEY = 'geometry-shortcuts-extension-language';
+export const LOCAL_STORAGE_SHORTCUTS_KEY_IT = 'keyboard-geometry-extension-it';
+export const LOCAL_STORAGE_SHORTCUTS_KEY_EN = 'keyboard-geometry-extension-en';
+export const LOCAL_STORAGE_LANGUAGE_KEY = 'keyboard-geometry-extension-language';

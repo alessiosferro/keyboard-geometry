@@ -7,8 +7,8 @@ export default {
       confirm: "Conferma"
     },
     copy: {
-      title: "Geometry Shortcuts v1.0",
-      welcome: "Benvenuto in Geometry Shortcuts!",
+      title: "Geometria da Tastiera",
+      welcome: "Benvenuto in Geometria da Tastiera!",
       description: `Cambiare una scorciatoia è molto semplice: seleziona un campo di input e premi
 la combinazione di tasti che preferisci! Puoi anche utilizzare tasti speciali come
 “⇧ Shift”, “${isAppleDevice() ? "⌃" : ""}Control” e ${isAppleDevice() ? "⌘ Command" : "Alt"}.
@@ -40,8 +40,8 @@ per selezionare il primo strumento nella lista oppure puoi scorrere tra gli stru
       confirm: "Confirm"
     },
     copy: {
-      title: "Geometry Shortcuts v1.0",
-      welcome: "Welcome to the Geometry Shortcuts extension",
+      title: "Keyboard Geometry",
+      welcome: "Welcome to the Keyboard Geometry extension",
       description: `Changing a shortcut is very simple: select an input and press the
 combination of keys that you like! You can use also use special keys such as
 ⇧ Shift, ${isAppleDevice() ? "⌃" : ""} Control e ${isAppleDevice() ? "⌘ Command" : "Alt"}.
