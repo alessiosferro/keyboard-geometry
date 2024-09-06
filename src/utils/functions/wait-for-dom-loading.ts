@@ -1,11 +1,29 @@
 export default function waitForDOMLoading(callback: () => void, unmountFilterComponent: null | (() => void)) {
-  const pickerButton = document.querySelector("#suiteAppPicker");
+  let elementToObserve = document.querySelector("#suiteAppPicker");
 
-  if (!pickerButton) {
+  let intervalId: number;
+
+  const isGeometryPage = window.location.pathname.includes("geometry");
+
+  if (isGeometryPage) {
+    elementToObserve = document.body;
+  }
+
+  if (!elementToObserve) {
     return;
   }
 
   const observer = new MutationObserver((mutationsList) => {
+    if (isGeometryPage) {
+      clearInterval(intervalId);
+
+      intervalId = window.setInterval(() => {
+        onToolsPanelMount(intervalId, callback, observer);
+      }, 100);
+
+      return;
+    }
+
     const [mutation] = mutationsList;
 
     const targetButton = (mutation.target as HTMLButtonElement);
@@ -17,13 +35,10 @@ export default function waitForDOMLoading(callback: () => void, unmountFilterCom
     if (!label) return;
 
     if (label.dataset.transKey === 'Geometry') {
-      const intervalId = setInterval(() => {
-        const toolsPanel = document.querySelector("#ggbApplet .toolsPanel");
+      clearInterval(intervalId);
 
-        if (toolsPanel) {
-          clearInterval(intervalId);
-          callback();
-        }
+      intervalId = setInterval(() => {
+        onToolsPanelMount(intervalId, callback, observer);
       }, 100);
 
       return;
@@ -32,5 +47,15 @@ export default function waitForDOMLoading(callback: () => void, unmountFilterCom
     unmountFilterComponent?.();
   });
 
-  observer.observe(pickerButton!, {childList: true, attributeFilter: ['data-trans-key'], subtree: true});
+  observer.observe(elementToObserve!, {childList: true, attributeFilter: ['data-trans-key'], subtree: true});
+}
+
+function onToolsPanelMount(intervalId: number, callback: () => void, observer: MutationObserver) {
+  const toolsPanel = document.querySelector("#ggbApplet .toolsPanel");
+
+  if (toolsPanel) {
+    observer.disconnect();
+    clearInterval(intervalId);
+    callback();
+  }
 }
