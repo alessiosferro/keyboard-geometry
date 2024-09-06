@@ -201,6 +201,8 @@ export default function App() {
           {strings.copy.welcome}
           <br/><br/>
           {strings.copy.description}
+          <br/><br/>
+          {strings.copy.searchBarDescription}
         </Text>
 
         <FormControl mb="1rem">

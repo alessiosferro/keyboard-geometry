@@ -7,9 +7,17 @@ export default {
       confirm: "Conferma"
     },
     copy: {
-      title: "Scorciatoie Geogebra (Edizione Geometria)",
-      welcome: "Benvenuto nell'estensione Scorciatoie di Geogebra (Edizione Geometria)!",
-      description: "Cambiare una scorciatoia è molto semplice: seleziona un campo di input e premi la combinazione di tasti che preferisci! Puoi anche utilizzare tasti speciali come “Shift”, “Control”, “Meta” (il tasto “Command” su Mac) e “Alt” (o “Option” su Mac). Dopo aver digitato la combinazione che hai scelto, basta cliccare fuori dal campo di input e la scorciatoia verrà salvata automaticamente!"
+      title: "Geometry Shortcuts v1.0",
+      welcome: "Benvenuto in Geometry Shortcuts!",
+      description: `Cambiare una scorciatoia è molto semplice: seleziona un campo di input e premi
+la combinazione di tasti che preferisci! Puoi anche utilizzare tasti speciali come
+“⇧ Shift”, “${isAppleDevice() ? "⌃" : ""}Control” e ${isAppleDevice() ? "⌘ Command" : "Alt"}.
+Dopo aver digitato la combinazione che hai scelto, basta cliccare fuori dal campo di
+input e la scorciatoia verrà salvata automaticamente!`,
+      searchBarDescription: `Puoi utilizzare la combinazione ${isAppleDevice() ? "⌘ Command + K" : "Alt + ⇧ Shift + K"}
+per selezionare la barra di ricerca, inoltre puoi navigare tra le opzioni della barra di ricerca
+semplicemente premendo i pulsanti freccia su e giù. Puoi premere invio mentre stai scrivendo sulla barra di ricerca
+per selezionare il primo strumento nella lista oppure puoi scorrere tra gli strumenti e premere invio su quello che preferisci.`
     },
     label: {
       selectLanguage: "Seleziona lingua",
@@ -32,9 +40,17 @@ export default {
       confirm: "Confirm"
     },
     copy: {
-      title: "Geogebra Shortcuts (Geometry Edition)",
-      welcome: "Welcome to the Geogebra Shortcuts extension (Geometry Edition)!",
-      description: "Changing a shortcut is very simple: select an input and press the combination of keys that you like! You can use also use special keys such as \"Shift\", \"Control\", \"Meta\" (the \"Command\" key on Mac) and \"Alt\" (or \"Option\" on Mac). After you type the combination of your choice, simply click away from the input and the shortcut will be saved automagically! Also the website will reflect your changes by reloading automatically."
+      title: "Geometry Shortcuts v1.0",
+      welcome: "Welcome to the Geometry Shortcuts extension",
+      description: `Changing a shortcut is very simple: select an input and press the
+combination of keys that you like! You can use also use special keys such as
+⇧ Shift, ${isAppleDevice() ? "⌃" : ""} Control e ${isAppleDevice() ? "⌘ Command" : "Alt"}.
+After you type the combination of your choice, simply click away from the input and the shortcut
+will be saved automagically! Also the website will reflect your changes by reloading automatically.`,
+      searchBarDescription: `You can use the combination ${isAppleDevice() ? "⌘ Command + K" : "Alt + ⇧ Shift + K"}
+to select the search bar, and you can also navigate through the options in the search bar
+by simply pressing the up and down arrow keys. You can press enter while typing in the search bar
+to select the first tool in the list, or you can scroll through the tools and press enter on the one you prefer.`
     },
     label: {
       selectLanguage: "Select language",

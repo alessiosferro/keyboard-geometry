@@ -12,7 +12,7 @@ import getShortcuts from "./utils/functions/get-shortcuts";
 let unmountFilterComponent: (() => void) | null = null;
 
 waitForDOMLoading(() => {
-  console.log("Geogebra Shortcuts System v1.0");
+  console.log("Geometry Shortcuts System v1.0");
   unmountFilterComponent = null;
 
   if (!localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY)) {
