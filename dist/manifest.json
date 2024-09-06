@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Geometry Shortcuts",
+  "name": "Keyboard Geometry",
   "author": "Alessio Sferro",
   "version": "1.0",
+  "default_locale": "en",
   "description": "Effortlessly select tools using customizable shortcuts or by searching and choosing them with the aid of an autocomplete search bar.",
   "action": {
     "default_popup": "popup.html"
