@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Geogebra Geometry Shortcuts System 1.0",
+  "name": "Geometry Shortcuts",
+  "author": "Alessio Sferro",
   "version": "1.0",
-  "description": "A chrome extensions that adds a shortcut system and a tool search filter to the geometry calculator in Geogebra.",
+  "description": "Effortlessly select tools using customizable shortcuts or by searching and choosing them with the aid of an autocomplete search bar.",
   "action": {
     "default_popup": "popup.html"
   },
