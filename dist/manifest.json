@@ -15,7 +15,8 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.geogebra.org/calculator/*"
+        "https://www.geogebra.org/calculator/*",
+        "https://www.geogebra.org/geometry"
       ],
       "js": [
         "popup.js"
