@@ -3,3 +3,4 @@ dist/bundle.js
 dist/bundle.js.LICENSE.txt
 dist/popup.js
 dist/popup.js.LICENSE.txt
+.idea
