@@ -22,7 +22,11 @@ export default function getShortcutString(event: KeyboardEvent | React.KeyboardE
   }
 
   if (!['Meta', 'Control', 'Alt', 'Shift'].includes(event.key)) {
-    key.push(event.key.toUpperCase());
+    const symbol = event.code.includes('Key') || event.code.includes('Digit') ?
+      event.code.slice(-1) :
+      event.key;
+
+    key.push(symbol.toUpperCase());
   }
 
   return key.join(' + ');
